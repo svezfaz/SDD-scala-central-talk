@@ -1,0 +1,553 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Stream Driven Development</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/white.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <script src="https://use.fontawesome.com/685eb64167.js"></script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+        <section>
+          <img class="plain noalpha" src="asset/homeaway.svg">
+          <aside class="notes">Let’s start with a quick survey, who among you knows what HomeAway is?</aside>
+        </section>
+        <section>
+          <img class="plain noalpha" src="asset/expedia.jpg">
+          <aside class="notes">
+          Ok let’s try again. Who among you knows what Expedia is.
+          -PAUSE-
+          </aside>
+        </section>
+        <section>
+          <img class="plain noalpha" src="asset/homeaway.svg">
+          <img class="plain noalpha" src="asset/expedia.jpg">
+          <aside class="notes">
+          HomeAway is an Expedia brand and is an online vacation rental marketplace.
+          </aside>
+        </section>
+        <section>
+            <h1>DIGITAL MARKETING AUTOMATION</h1>
+            <h3 style="visibility:hidden">Placeholder</h3>
+            <p>1. automate repetitive tasks</p>
+            <p>2. minimize errors and reaction times</p>
+            <aside class="notes">
+              HomeAway is on a quest to assert their presence as a key player in the vacation rentals market.
+              And it's doing it by investing in digital marketing. What we are specifically interested in, is
+              digital marketing automation.
+              The end goals are two:
+              the first is automating repetitive actions traditionally performed by humans in the digital marketing sphere.
+              The second is to move forward and gain an edge over human activity by minimizing errors and reaction times
+            </aside>
+        </section>
+        <section>
+            <h1>DIGITAL MARKETING AUTOMATION</h1>
+            <h3 style="visibility:hidden">Placeholder</h3>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
+            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
+            <aside class="notes">
+              My name is Stefano, I am a software engineer at HomeAway,
+              and this is what we are going to talk about tonight - digital marketing.
+              -PAUSE-
+              Ok before you start throwing rotten tomatoes at me, this is not true.
+            </aside>
+        </section>
+        <section>
+            <h1><del>DIGITAL MARKETING AUTOMATION</del></h1>
+            <h3 style="visibility:hidden">Placeholder</h3>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
+            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
+            <aside class="notes">
+              I was just setting the scene for the real presentation topic, which is
+            </aside>
+        </section>
+        <section>
+            <h1>STREAM DRIVEN DEVELOPMENT</h1>
+            <h3>Roll your own reactive pipeline</h3>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
+            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
+            <aside class="notes">
+              ...which is how we tackled marketing automation (or at least one of its many faces) developing reactive systems.
+              Sounds better, right?
+            </aside>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+            #AGENDA
+            1. the problem
+            3. the (reactive) approach
+            2. the framework
+
+            Note:
+            So the agenda is extremely simple,
+            First we’ll take a look at the problem we are facing
+            Then we'll see how reactive streams are a good fit for this problem
+            and finally we’ll look at the framework we’ve built to solve it - with the help of some sample code.
+
+            So let’s get started.
+          </script>
+        </section>
+      </section>
+
+        <section>
+          <section data-markdown>
+            <script type="text/template">
+              #THE PROBLEM
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###DYNAMIC ADS
+              ![alt text](asset/dynamic_ad.png "Dynamic Ad")
+
+              Note:
+              The problem is the following. To make our advertisements more effective,
+              we want them to be dynamic - that is, show relevant content to the relevant people at the relevant time.
+
+              Let's assume someone looked for flights to Cape Town, it could be a good target to show an ad like this.
+              This is what's called prospecting, that is, looking for new clients.
+
+              Or it could be that someone already was on HomeAway website and was looking at this property, but didn't
+              book it. It could be a good target for an ad like this to try and bring him back to the site.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###AD PLATFORMS
+              ![alt text](asset/ad_platforms.svg "Ad platforms")
+
+              Note:
+              There is a variety of platforms out there offering dynamic ads. Google adwords, Facebook and others.
+
+              These platforms are notified by HomeAway whenever a user interacts with our website.
+              The same happens for many other sites. These platforms have their own algorithms to determine
+              what's the most relevant ad to show, plus there is usually a real-time bid going on between
+              whoever might want to display an ad.
+              </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###DYNAMIC ADS
+              ![alt text](asset/dynamic_ad.png "Dynamic Ad")
+
+              Note:
+              Let’s just assume Facebook shows a specific holiday home to a potential customer.
+              we want the details of this property to be spot on and up to date - best example is the price of a property, which might change greatly.
+              We want it to reflect the current price of the property to hope that the customer would buy - or convert in marketing lingo.
+
+              The key here is to keep these advertisers up to date with our data - our properties, our destinations, etc.
+
+              This operation of sending product data to advertisers is traditionally done manually by marketers sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###AUTOMATED FEEDS
+              ![alt text](asset/product_feeds_1.svg "Product Feeds")
+
+              Note:
+              Our objective is to make this programmatic. Essentially we want to set up automated data feeds
+              from us to these platforms. There are several variables to this problem:
+              - different input data (product, destinations, audiences)
+              - different data sources (kafka, http, ...)
+              - different data validation
+              - different data presentation
+              - different data sinks (http, SFTP, S3)
+            </script>
+          </section>
+        </section>
+        <section>
+          <section data-markdown>
+            <script type="text/template">
+              #THE APPROACH
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###REACTIVE STREAMS
+              ![alt text](asset/reactive-traits.svg "Reactive Streams")
+
+              Note:
+
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![alt text](asset/akka.png "Akka")
+              1. reactive streams implementation and simplification
+              2. large and active community
+              3. ubiquitous language extension
+
+              Note:
+              Why Akka Streams?
+
+              This is the only opinionated choice that our framework does.
+
+              (Why not Apache Flink?
+              That is what  distinguishes those systems from libraries such as Akka Streams, RxJava, or Vert.x.
+              The presented frameworks are mainly located in the Big and Fast Data area, while the libraries can also be
+              used to build smaller, more reactive applications, but usually without native support for event time and
+              clustering.)
+            </script>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>THE FRAMEWORK</h1>
+          </section>
+          <section>
+            <h3>SAMPLE PIPELINE</h3>
+             <img class="plain noalpha" src="asset/sample_pipeline.svg">
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/layers.svg">
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/application_layer.svg">
+          </section>
+          <aside class="notes">
+            Application layer responsibility:
+            1) Start and stop the streaming of data (LIFECYCLE)
+            Performing any scheduling if needed - a pipeline could be a scheduled transfer, or an infinite stream
+            Exposing a handle for a clean shutdown is certainly needed for testing, and sometimes even in production
+
+            2) Config and environment management
+          </aside>
+          <section data-markdown>
+            <script type="text/template">
+              ###APPLICATION - TEST
+              ```scala
+              "application" should "run" in {
+
+                val handle = Application.run(Environment.Test)
+
+                eventually {
+                  // some side-effect should happen
+                }
+
+                handle.shutdown().futureValue
+              }
+              ```
+
+              Note:
+              - Testing application as a black box
+              - Quite complex and lengthy to run
+              - All dependencies are embedded
+              - Eventually-based to verify side-effects
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###APPLICATION - CODE
+              ```scala
+              object Application {
+
+                def run(environment: Environment): Handle = ???
+
+                trait Handle {
+                  def completed : Future[Done]
+                  def shutdown(): Future[Done]
+                }
+              }
+              ```
+
+              Note:
+              ...
+            </script>
+          </section>
+          <section>
+            <img class="plain noalpha" src="asset/reactive_layer.svg">
+            <aside class="notes">
+              Reactive layer responsibility:
+              (surprise surprise) make the stream reactive
+              - Define the topology of the stream (what we’ll call the graph)
+              - Define the building blocks of the stream (what we’ll call the stages,
+              we'll see there are different types of them)
+              - Deal with backpressure and parallelism
+            </aside>
+          </section>
+          <section>
+            <img class="plain noalpha" src="asset/akka_stages.svg">
+            <aside class="notes">
+              The whole reactive layer is based on the concept of stage.
+              A stage is a reactive component of arbitrary complexity.
+              It is reusable and composable.
+
+              It's important to note that, to us, these are not just Akka Streams DSL objects,
+              but they became part of the ubiquitous language. In other words, they became the official glossary
+              used within the team. FIRST TAKEAWAY!
+            </aside>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###Stage blueprint
+              - shape (strongly typed in/out ports)
+              - materialized value (last type param)
+
+              Note:
+              An Akka stage has an external blueprint made up of its shape, which is essentially a bunch of
+              strongly typed input and output ports, and its materialized value, which is something the stage
+              transforms into when the stream is run (or materialized).
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+| Stage   | Type                                         |
+|---------|----------------------------------------------|
+| Source  | `Source[Property, Shutdownable]`             |
+| Flow    | `Flow[Property, ValidProperty, NotUsed]`     |
+| Sink    | `Sink[ValidProperty, Future[Done]]`          |
+| Graph*  | `RunnableGraph[(Shutdownable, Future[Done])]`|
+
+*: can be `run()`
+
+Note:
+Let's see this by example. - go through them -
+
+We found it is good practice to make these types a product of the analysis phase
+of your user story, and then let them drive your testing and your implementation.
+SECOND TAKEAWAY!
+            </script>
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/stages_ots.svg">
+            <aside class="notes">THIRD TAKEAWAY!</aside>
+          </section>
+          <section>
+            <h3>OFF-THE-SHELF STAGE - TEST</h3>
+            <pre class="stretch">
+              <code data-trim data-noescape class="hljs scala">
+"source" should "read from Kafka" in {
+
+  val testProperty: Property = ???
+
+  val config = KafkaConfig(...)
+  val source = PropertySource(config)
+
+  val result = source.runWith(Sink.head)
+
+  // embeddedKafka - needs a serializer!
+  publishToKafka(config.topic, serialize(testProperty))
+
+  results.futureValue should be testProperty
+}
+              </code>
+            </pre>
+          </section>
+          <section>
+            <h3>OFF-THE-SHELF STAGE - CODE</h3>
+            <pre class="stretch">
+              <code data-trim data-noescape class="hljs scala">
+object PropertySource {
+  def apply(config: KafkaConfig): Source[Property, Shutdownable] = {
+
+    val kafkaSrc: Source[ConsumerRecord[PropertyKey, Property], Control] =
+      Consumer.plainSource(settings(config),
+                           Subscriptions.topics(config.topic))
+
+    kafkaSrc
+      .map(_.value)
+      .mapMaterializedValue { control ⇒
+        new Shutdownable {
+          override def shutdown = control.shutdown()
+        }
+      }
+  }
+}
+              </code>
+            </pre>
+          </section>
+          <section>
+            <h3>CUSTOM STAGE 1 - CODE</h3>
+            <pre>
+              <code data-trim data-noescape class="hljs scala">
+object ValidationFlow {
+
+  def apply(): Flow[Property, ValidProperty, NotUsed] = {
+
+    val service: PropertyValidationService = ???
+
+    Flow[Property].map(service.validate)
+  }
+}
+              </code>
+            </pre>
+            <aside class="notes">
+              Custom stages need to be wrappers around domain logic.
+            </aside>
+          </section>
+          <section>
+            <h3>CUSTOM STAGE 2 - CODE</h3>
+            <pre>
+              <code data-trim data-noescape class="hljs scala">
+object ValidPropertySink {
+
+  def apply(config: CassandraConfig):
+  Sink[ValidProperty, Future[Done]] = {
+
+    val repository: ValidPropertyRepository = ???
+
+    Flow[ValidProperty]
+      .mapAsync(config.parallelism)(repository.store)
+      .toMat(Sink.ignore)(Keep.right)
+  }
+}
+              </code>
+            </pre>
+            <aside class="notes">
+              Custom stages need to be wrappers around domain logic.
+            </aside>
+          </section>
+          <section>
+            <h3>GRAPH - TEST</h3>
+            <pre>
+              <code data-trim data-noescape class="hljs scala">
+"graph" should "connect the provided stages" in {
+
+  val testProperty     : Property      = ???
+  val testValidProperty: ValidProperty = ???
+
+  val source = Source.single(testProperty)
+  val flow   = Flow[Property].map{_ ⇒ testValidProperty}
+  val sink   = Sink.seq[ValidProperty]
+
+  val (_, results) = Graph(source, flow, sink).run()
+
+  results.futureValue should contain only testValidProperty
+}
+              </code>
+            </pre>
+            <aside class="notes">
+              Testing a graph is way simpler than testing a side-effecting application.
+              We can be more thorough with testing on the reactive layer as it's cheaper and quicker.
+            </aside>
+          </section>
+          <section>
+            <h3>GRAPH - CODE</h3>
+            <pre class="stretch">
+              <code data-trim data-noescape class="hljs scala">
+object Graph {
+  def apply(propertySource: Source[Property, Shutdownable],
+            validationFlow: Flow[Property, ValidProperty, NotUsed],
+            propertySink  : Sink[ValidProperty, Future[Done]]):
+  RunnableGraph[(Shutdownable, Future[Done])] = {
+
+    RunnableGraph.fromGraph(GraphDSL.create(propertySource, propertySink)
+    ((_, _)) { implicit builder ⇒ (source, sink) ⇒
+      import GraphDSL.Implicits._
+
+      source ~> validationFlow ~> sink
+
+      ClosedShape
+    })
+  }
+}
+              </code>
+            </pre>
+            <aside class="notes">
+              Creating a graph forces you to reason about 2 things:
+              1) the topology of your pipeline
+              2) the types of your stages
+
+              Using GraphDSL might seem verbose as it carries some boilerplate - and for this example is definitely overkill.
+              However, the graphDSL will reflect the topology of your pipeline while it grows.
+              It is self documenting code, which is awesome.
+
+              This is where everything comes together. The graph can accomodate non-functional stages for logging,
+              monitoring, error handling...
+            </aside>
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/domain_layer.svg">
+            <aside class="notes">
+              This layer must not know about Akka. It is where your business logic lives.
+              FOURTH TAKEAWAY!
+            </aside>
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/domain.svg">
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/layers.svg">
+            <aside class="notes">
+              to quickly recap:
+              application layer: lifecycle and configuration
+              reactive layer: all the reactive infrastructure (with the help of Akka)
+              domain layer: all things business logic
+            </aside>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+            ###METHODOLOGY CONSIDERATIONS
+            - start with a dummy pipeline and bring it to prod
+            - iterate adding/changing AT MOST ONE stage per iteration
+            </script>
+          </section>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+            #KEY TAKEAWAYS
+            1. Borrow from Akka Streams to extend your ubiquitous language
+            2. Brainstorm on the stages types before coding
+            3. Browse for off-the-shelf stages
+            4. Separate your reactive infrastructure from your domain
+            </script>
+        </section>
+
+        <section>
+            <h1>THANK YOU!</h1>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
+            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
+            <!-- <p><small>
+              <a href="https://github.com/svezfaz/akka-backpressure-scala-central-talk">https://github.com/svezfaz/akka-backpressure-scala-central-talk</a>
+            </small></p> -->
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+        transition: 'none',
+        showNotes: false,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+
+    </script>
+  </body>
+</html>
