@@ -190,7 +190,12 @@
               ![alt text](asset/reactive-traits.svg "Reactive Streams")
 
               Note:
+              Reactive streams make for a perfect use case in this scenario, as they allow for robust, fault-tolerant solutions whenever an infinite stream of data needs to be handled.
 
+              This is why we went ahead and decide to structure our system as a bunch of loosely connected reactive pipelines.
+              We decided to solve the approach by developing a bunch of self-contained services - or streams. Each and every stream has the task of reading from a datasource, transform the data according to a specific advertisers format, and publish the data.
+
+              (One might argue this solution is not efficient if the sources and sinks are proliferating..etc.etc)
             </script>
           </section>
           <section data-markdown>

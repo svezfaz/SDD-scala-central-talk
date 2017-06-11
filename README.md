@@ -1,1 +1,2 @@
-# STREAM DRIVEN DEVELOPMENT - Roll your own reactive pipeline
+# STREAM DRIVEN DEVELOPMENT
+## Roll your own reactive pipeline
