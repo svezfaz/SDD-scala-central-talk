@@ -157,9 +157,9 @@
               we want the details of this property to be spot on and up to date - best example is the price of a property, which might change greatly.
               We want it to reflect the current price of the property to hope that the customer would buy - or convert in marketing lingo.
 
-              The key here is to keep these advertisers up to date with our data - our properties, our destinations, etc.
+              The key here is to keep these platforms up to date with our data - our properties, our destinations, etc.
 
-              This operation of sending product data to advertisers is traditionally done manually by marketers sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
+              This operation of sending product data to platforms is traditionally done manually by marketers sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
             </script>
           </section>
           <section data-markdown>
@@ -186,16 +186,19 @@
           </section>
           <section data-markdown>
             <script type="text/template">
-              ###REACTIVE STREAMS
-              ![alt text](asset/reactive-traits.svg "Reactive Streams")
+              ###REACTIVE SYSTEMS
+              ![alt text](asset/reactive-traits.svg "Reactive Systems")
 
               Note:
+              This is a perfect use case for designing a reactive system. These you see are the traits of a reactive system, taken from the reactive manifesto.
+              Although we are not trying to build a responsive system in the traditional sense, as we are building a backend-to-backend integration,
+              we want it to be elastic (...) and resilient (...), and therefore, we want it to be fully asynchronous and message driven.
+
               Reactive streams make for a perfect use case in this scenario, as they allow for robust, fault-tolerant solutions whenever an infinite stream of data needs to be handled.
 
-              This is why we went ahead and decide to structure our system as a bunch of loosely connected reactive pipelines.
-              We decided to solve the approach by developing a bunch of self-contained services - or streams. Each and every stream has the task of reading from a datasource, transform the data according to a specific advertisers format, and publish the data.
-
-              (One might argue this solution is not efficient if the sources and sinks are proliferating..etc.etc)
+              This is why we went ahead and decide to structure our system as a bunch of loosely connected reactive pipelines, or streams.
+              Each and every stream has the task of reading from a datasource, making some useful data validation/transformation, and publish the data
+               - either in an internal datastore or directly to the ad platforms.
             </script>
           </section>
           <section data-markdown>
@@ -206,6 +209,7 @@
               3. ubiquitous language extension
 
               Note:
+              Akka - and more precisely Akka Streams - was our tool of choice to build our reactive system.
               Why Akka Streams?
 
               This is the only opinionated choice that our framework does.
