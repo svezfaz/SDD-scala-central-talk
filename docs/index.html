@@ -195,7 +195,13 @@
               we want it to be elastic (...) and resilient (...), and therefore, we want it to be fully asynchronous and message driven.
 
               Reactive streams make for a perfect use case in this scenario, as they allow for robust, fault-tolerant solutions whenever an infinite stream of data needs to be handled.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![alt text](asset/product_feeds_2.svg "Product feeds")
 
+              Note:
               This is why we went ahead and decide to structure our system as a bunch of loosely connected reactive pipelines, or streams.
               Each and every stream has the task of reading from a datasource, making some useful data validation/transformation, and publish the data
                - either in an internal datastore or directly to the ad platforms.
@@ -203,7 +209,7 @@
           </section>
           <section data-markdown>
             <script type="text/template">
-              ![alt text](asset/akka.png "Akka")
+              ###AKKA STREAMS
               1. reactive streams implementation and simplification
               2. large and active community
               3. ubiquitous language extension
@@ -213,12 +219,6 @@
               Why Akka Streams?
 
               This is the only opinionated choice that our framework does.
-
-              (Why not Apache Flink?
-              That is what  distinguishes those systems from libraries such as Akka Streams, RxJava, or Vert.x.
-              The presented frameworks are mainly located in the Big and Fast Data area, while the libraries can also be
-              used to build smaller, more reactive applications, but usually without native support for event time and
-              clustering.)
             </script>
           </section>
         </section>
@@ -227,7 +227,7 @@
             <h1>THE FRAMEWORK</h1>
           </section>
           <section>
-            <h3>SAMPLE PIPELINE</h3>
+            <h3>EXAMPLE: PROPERTY FEED</h3>
              <img class="plain noalpha" src="asset/sample_pipeline.svg">
           </section>
           <section>
@@ -306,14 +306,14 @@
 
               It's important to note that, to us, these are not just Akka Streams DSL objects,
               but they became part of the ubiquitous language. In other words, they became the official glossary
-              used within the team. FIRST TAKEAWAY!
+              used within the team.
             </aside>
           </section>
           <section data-markdown>
             <script type="text/template">
               ###Stage blueprint
-              - shape (strongly typed in/out ports)
-              - materialized value (last type param)
+              1. shape (strongly typed in/out ports)
+              2. materialized value (last type param)
 
               Note:
               An Akka stage has an external blueprint made up of its shape, which is essentially a bunch of
@@ -337,36 +337,14 @@ Let's see this by example. - go through them -
 
 We found it is good practice to make these types a product of the analysis phase
 of your user story, and then let them drive your testing and your implementation.
-SECOND TAKEAWAY!
             </script>
           </section>
           <section>
             <img class="stretch plain noalpha" src="asset/stages_ots.svg">
-            <aside class="notes">THIRD TAKEAWAY!</aside>
+            <aside class="notes"></aside>
           </section>
           <section>
-            <h3>OFF-THE-SHELF STAGE - TEST</h3>
-            <pre class="stretch">
-              <code data-trim data-noescape class="hljs scala">
-"source" should "read from Kafka" in {
-
-  val testProperty: Property = ???
-
-  val config = KafkaConfig(...)
-  val source = PropertySource(config)
-
-  val result = source.runWith(Sink.head)
-
-  // embeddedKafka - needs a serializer!
-  publishToKafka(config.topic, serialize(testProperty))
-
-  results.futureValue should be testProperty
-}
-              </code>
-            </pre>
-          </section>
-          <section>
-            <h3>OFF-THE-SHELF STAGE - CODE</h3>
+            <h3>SOURCE</h3>
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object PropertySource {
@@ -389,7 +367,7 @@ object PropertySource {
             </pre>
           </section>
           <section>
-            <h3>CUSTOM STAGE 1 - CODE</h3>
+            <h3>FLOW</h3>
             <pre>
               <code data-trim data-noescape class="hljs scala">
 object ValidationFlow {
@@ -408,7 +386,7 @@ object ValidationFlow {
             </aside>
           </section>
           <section>
-            <h3>CUSTOM STAGE 2 - CODE</h3>
+            <h3>SINK</h3>
             <pre>
               <code data-trim data-noescape class="hljs scala">
 object ValidPropertySink {
@@ -430,31 +408,7 @@ object ValidPropertySink {
             </aside>
           </section>
           <section>
-            <h3>GRAPH - TEST</h3>
-            <pre>
-              <code data-trim data-noescape class="hljs scala">
-"graph" should "connect the provided stages" in {
-
-  val testProperty     : Property      = ???
-  val testValidProperty: ValidProperty = ???
-
-  val source = Source.single(testProperty)
-  val flow   = Flow[Property].map{_ ⇒ testValidProperty}
-  val sink   = Sink.seq[ValidProperty]
-
-  val (_, results) = Graph(source, flow, sink).run()
-
-  results.futureValue should contain only testValidProperty
-}
-              </code>
-            </pre>
-            <aside class="notes">
-              Testing a graph is way simpler than testing a side-effecting application.
-              We can be more thorough with testing on the reactive layer as it's cheaper and quicker.
-            </aside>
-          </section>
-          <section>
-            <h3>GRAPH - CODE</h3>
+            <h3>GRAPH</h3>
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object Graph {
@@ -506,13 +460,6 @@ object Graph {
               reactive layer: all the reactive infrastructure (with the help of Akka)
               domain layer: all things business logic
             </aside>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-            ###METHODOLOGY CONSIDERATIONS
-            - start with a dummy pipeline and bring it to prod
-            - iterate adding/changing AT MOST ONE stage per iteration
-            </script>
           </section>
         </section>
 
