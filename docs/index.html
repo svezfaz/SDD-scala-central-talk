@@ -62,7 +62,7 @@
         <section>
             <h1>STREAM DRIVEN DEVELOPMENT</h1>
             <h3>Roll your own reactive pipeline</h3>
-            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">www.homeaway.com</a></p>
             <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
             | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
             <aside class="notes">
@@ -70,22 +70,6 @@
               and I am going to show you how we tackled marketing automation (or at least one of its many faces) developing reactive systems with Akka and Scala.
             </aside>
         </section>
-        <!-- <section data-markdown>
-          <script type="text/template">
-            #AGENDA
-            1. the problem
-            3. the (reactive) approach
-            2. the framework
-
-            Note:
-            So the agenda is extremely simple,
-            First we’ll take a look at the problem we are facing
-            Then we'll see how reactive streams are a good fit for this problem
-            and finally we’ll look at the framework we’ve built to solve it - with the help of some sample code.
-
-            So let’s get started.
-          </script>
-        </section> -->
       </section>
 
         <section>
@@ -117,16 +101,6 @@
               sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
             </script>
           </section>
-          <!-- <section data-markdown>
-            <script type="text/template">
-              ###MANUAL FEEDS
-              ![manual feeds](asset/manual_feeds.svg)
-
-              Note:
-              This operation of sending product data to platforms is traditionally done manually by marketers,
-              sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
-            </script>
-          </section> -->
           <section data-markdown>
             <script type="text/template">
               ###AUTOMATED FEEDS
@@ -182,40 +156,7 @@
             </script>
           </section>
         </section>
-        <!-- <section>
-          <section data-markdown>
-            <script type="text/template">
-              #THE APPROACH
-            </script>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-              ###REACTIVE SYSTEMS
-              ![alt text](asset/reactive-traits.svg "Reactive Systems")
 
-              Note:
-              This is a perfect use case for designing a reactive system. These you see are the traits of a reactive system, taken from the reactive manifesto.
-              Although we are not trying to build a responsive system in the traditional sense, as we are building a backend-to-backend integration,
-              we want it to be elastic (...) and resilient (...), and therefore, we want it to be fully asynchronous and message driven.
-
-
-              </script>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-              ###AKKA STREAMS
-              1. reactive streams implementation and simplification
-              2. large and active community
-              3. ubiquitous language extension
-
-              Note:
-              Akka - and more precisely Akka Streams - was our tool of choice to build our reactive streams.
-              This is the only opinionated choice that our framework does.
-
-              Why Akka Streams?
-            </script>
-          </section>
-        </section> -->
         <section>
           <section>
             <h1>THE FRAMEWORK</h1>
@@ -233,38 +174,6 @@
           <section>
             <img class="stretch plain noalpha" src="asset/layers.svg">
           </section>
-          <!-- <section>
-            <img class="stretch plain noalpha" src="asset/application_layer.svg">
-            <aside class="notes">
-              Application layer responsibility:
-              1) Start and stop the streaming of data (LIFECYCLE)
-              Performing any scheduling if needed - a pipeline could be a scheduled transfer, or an infinite stream
-
-              2) Config and environment management
-            </aside>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-              ###APPLICATION - CODE
-              ```scala
-              object Application {
-
-                def run(environment: Environment): Handle = ???
-
-                trait Handle {
-                  def completed : Future[Done]
-                  def shutdown(): Future[Done]
-                }
-              }
-              ```
-
-              Note:
-              ...
-            </script>
-            <aside class="notes">
-              Exposing a handle for a clean shutdown is certainly needed for testing, and sometimes even in production
-            </aside>
-          </section> -->
           <section>
             <img class="stretch plain noalpha" src="asset/reactive_layer.svg">
             <aside class="notes">
@@ -296,7 +205,7 @@
               2. materialized value (last type param)
 
               Note:
-              An Akka stage has an external blueprint made up of its shape, which is essentially a bunch of
+              An Akka stage has a type signature determined by its shape, which is essentially a bunch of
               strongly typed input and output ports, and its materialized value, which can be seen as the stage
               interface, or a way to interact with the stage.
             </script>
@@ -306,9 +215,9 @@
               ![pipeline types](asset/pipelines_types_0.svg)
 
               Note:
-              We found it is good practice to make these types a product of the analysis phase
-              of your user story, and then let them drive your testing and your implementation.
-              So let's design our stages.
+              We found it is good practice to decide these types during our analysis phase,
+              and then let them drive your testing and your implementation.
+              So let's design our stage types.
             </script>
           </section>
           <section data-markdown>
@@ -340,7 +249,8 @@
               Note:
               This calls for a partition of the graph, a part will handle the happy path, another the error path.
               We'll need one sink for properties, and one for errors.
-              Treat errors as messages is prescribed by the reactive manifesto, and allows you to handle errors all in one place.
+              Treat errors as messages is prescribed by the reactive manifesto, and allows you to handle errors all in one place,
+              so it is a very sensible thing to do
             </script>
           </section>
           <section data-markdown>
@@ -486,7 +396,7 @@ object Graph {
           <section>
             <img class="stretch plain noalpha" src="asset/domain_layer.svg">
             <aside class="notes">
-              This layer must not know about Akka. It is where your business logic lives.
+              It is where your business logic lives. This layer must not know about Akka or streaming
             </aside>
           </section>
           <section>
@@ -561,26 +471,13 @@ object Graph {
               This is basically how we got ..
             </script>
           </section>
-
-          <!-- <section data-markdown>
-            <script type="text/template">
-              #KEY TAKEAWAYS
-              1. Borrow from Akka Streams to extend your ubiquitous language
-              2. Brainstorm on the stages types before coding
-              3. Browse for off-the-shelf stages
-              4. Separate your reactive infrastructure from your domain
-            </script>
-          </section> -->
         </section>
 
         <section>
             <h1>THANK YOU!</h1>
-            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
+            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">www.homeaway.com</a></p>
             <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
             | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
-            <!-- <p><small>
-              <a href="https://github.com/svezfaz/akka-backpressure-scala-central-talk">https://github.com/svezfaz/akka-backpressure-scala-central-talk</a>
-            </small></p> -->
         </section>
       </div>
     </div>
