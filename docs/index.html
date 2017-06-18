@@ -42,7 +42,7 @@
           <img class="plain noalpha" src="asset/homeaway.svg">
           <img class="plain noalpha" src="asset/expedia.jpg">
           <aside class="notes">
-          HomeAway is an Expedia brand and is an online vacation rental marketplace.
+          HomeAway is an Expedia brand focusing on the vacation rental market.
           </aside>
         </section>
         <section>
@@ -60,40 +60,17 @@
             </aside>
         </section>
         <section>
-            <h1>DIGITAL MARKETING AUTOMATION</h1>
-            <h3 style="visibility:hidden">Placeholder</h3>
-            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
-            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
-            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
-            <aside class="notes">
-              My name is Stefano, I am a software engineer at HomeAway,
-              and this is what we are going to talk about tonight - digital marketing.
-              -PAUSE-
-              Ok before you start throwing rotten tomatoes at me, this is not true.
-            </aside>
-        </section>
-        <section>
-            <h1><del>DIGITAL MARKETING AUTOMATION</del></h1>
-            <h3 style="visibility:hidden">Placeholder</h3>
-            <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
-            <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
-            | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
-            <aside class="notes">
-              I was just setting the scene for the real presentation topic, which is
-            </aside>
-        </section>
-        <section>
             <h1>STREAM DRIVEN DEVELOPMENT</h1>
             <h3>Roll your own reactive pipeline</h3>
             <p>Stefano Bonetti | Dev @ <a href="https://www.homeaway.com/info/about-us">HomeAway</a></p>
             <p><i class="fa fa-github" aria-hidden="true"></i><a href="https://github.com/svezfaz"> @svezfaz</a>
             | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
             <aside class="notes">
-              ...which is how we tackled marketing automation (or at least one of its many faces) developing reactive systems.
-              Sounds better, right?
+              My name is Stefano, I am a software engineer at HomeAway.
+              and I am going to show you how we tackled marketing automation (or at least one of its many faces) developing reactive systems with Akka and Scala.
             </aside>
         </section>
-        <section data-markdown>
+        <!-- <section data-markdown>
           <script type="text/template">
             #AGENDA
             1. the problem
@@ -108,77 +85,104 @@
 
             So let’s get started.
           </script>
-        </section>
+        </section> -->
       </section>
 
         <section>
           <section data-markdown>
             <script type="text/template">
               #THE PROBLEM
+
+              Note:
+              The problem is the following.
             </script>
           </section>
           <section data-markdown>
             <script type="text/template">
               ###DYNAMIC ADS
-              ![alt text](asset/dynamic_ad.png "Dynamic Ad")
+              ![dynamic ad](asset/dynamic_ad.png)
 
               Note:
-              The problem is the following. To make our advertisements more effective,
-              we want them to be dynamic - that is, show relevant content to the relevant people at the relevant time.
+              To make our advertisements more effective, we want them to be dynamic,
+              that is, show relevant content to the relevant people at the relevant time.
 
-              Let's assume someone looked for flights to Cape Town, it could be a good target to show an ad like this.
-              This is what's called prospecting, that is, looking for new clients.
+              Let's assume someone already was on HomeAway.com and was looking at this property, but didn't
+              book it. It could be a good target for an ad like this to try and bring him or her back to the site.
 
-              Or it could be that someone already was on HomeAway website and was looking at this property, but didn't
-              book it. It could be a good target for an ad like this to try and bring him back to the site.
+              The key point here is that whoever displays this ads needs to be up to date with our data,
+              and this data can change a lot. For example the price of a property can fluctuate a lot.
+              So we need to get our data to the ad platforms, and we need to get it there fast.
+
+              This operation of sending product data to platforms is traditionally done manually by marketers,
+              sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
             </script>
           </section>
-          <section data-markdown>
+          <!-- <section data-markdown>
             <script type="text/template">
-              ###AD PLATFORMS
-              ![alt text](asset/ad_platforms.svg "Ad platforms")
+              ###MANUAL FEEDS
+              ![manual feeds](asset/manual_feeds.svg)
 
               Note:
-              There is a variety of platforms out there offering dynamic ads. Google adwords, Facebook and others.
-
-              These platforms are notified by HomeAway whenever a user interacts with our website.
-              The same happens for many other sites. These platforms have their own algorithms to determine
-              what's the most relevant ad to show, plus there is usually a real-time bid going on between
-              whoever might want to display an ad.
-              </script>
-          </section>
+              This operation of sending product data to platforms is traditionally done manually by marketers,
+              sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
+            </script>
+          </section> -->
           <section data-markdown>
             <script type="text/template">
-              ###DYNAMIC ADS
-              ![alt text](asset/dynamic_ad.png "Dynamic Ad")
+              ###AUTOMATED FEEDS
+              ![product feeds](asset/product_feeds_1.svg)
 
               Note:
-              Let’s just assume Facebook shows a specific holiday home to a potential customer.
-              we want the details of this property to be spot on and up to date - best example is the price of a property, which might change greatly.
-              We want it to reflect the current price of the property to hope that the customer would buy - or convert in marketing lingo.
-
-              The key here is to keep these platforms up to date with our data - our properties, our destinations, etc.
-
-              This operation of sending product data to platforms is traditionally done manually by marketers sending a big fat Excel file to an email address and hoping no one on the other side is on holiday.
+              Our objective is to make this programmatic. Essentially we want to set up automated data feeds
+              from us to these platforms. This poses a series of issues
             </script>
           </section>
           <section data-markdown>
             <script type="text/template">
               ###AUTOMATED FEEDS
-              ![alt text](asset/product_feeds_1.svg "Product Feeds")
+              ![product feeds](asset/product_feeds_2.svg)
 
               Note:
-              Our objective is to make this programmatic. Essentially we want to set up automated data feeds
-              from us to these platforms. There are several variables to this problem:
-              - different input data (product, destinations, audiences)
-              - different data sources (kafka, http, ...)
-              - different data validation
-              - different data presentation
-              - different data sinks (http, SFTP, S3)
+              First of all there are multiple platforms that we want to reach.
+              These you can see are only a few of them. They want different data,
+              with different presentation and they support different integrations.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###AUTOMATED FEEDS
+              ![product feeds](asset/product_feeds_3.svg)
+
+              Note:
+              Secondly, the information we need to send is scattered in many places within HomeAway
+              we got a variety of sources we need to integrate, and they come in different forms,
+              like Kafka feeds and REST APIs
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###OBJECTIVE
+              A framework to quickly roll out pipelines which are
+              1. resilient
+              2. scalable
+
+              Note:
+              To tackle this, we need a framework to enable a quick rollout of pipeline applications which are
+              1) resilient - as in, they need to recover from failures and be always on
+              2) scalable - to be able to handle changing and increasing load
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              In one word
+              #REACTIVE
+
+              Note:
+              in other words, we want our feeds to be reactive, and indeed, reactive streams is what we went for.
             </script>
           </section>
         </section>
-        <section>
+        <!-- <section>
           <section data-markdown>
             <script type="text/template">
               #THE APPROACH
@@ -194,18 +198,8 @@
               Although we are not trying to build a responsive system in the traditional sense, as we are building a backend-to-backend integration,
               we want it to be elastic (...) and resilient (...), and therefore, we want it to be fully asynchronous and message driven.
 
-              Reactive streams make for a perfect use case in this scenario, as they allow for robust, fault-tolerant solutions whenever an infinite stream of data needs to be handled.
-            </script>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-              ![alt text](asset/product_feeds_2.svg "Product feeds")
 
-              Note:
-              This is why we went ahead and decide to structure our system as a bunch of loosely connected reactive pipelines, or streams.
-              Each and every stream has the task of reading from a datasource, making some useful data validation/transformation, and publish the data
-               - either in an internal datastore or directly to the ad platforms.
-            </script>
+              </script>
           </section>
           <section data-markdown>
             <script type="text/template">
@@ -215,57 +209,39 @@
               3. ubiquitous language extension
 
               Note:
-              Akka - and more precisely Akka Streams - was our tool of choice to build our reactive system.
-              Why Akka Streams?
-
+              Akka - and more precisely Akka Streams - was our tool of choice to build our reactive streams.
               This is the only opinionated choice that our framework does.
+
+              Why Akka Streams?
             </script>
           </section>
-        </section>
+        </section> -->
         <section>
           <section>
             <h1>THE FRAMEWORK</h1>
+            <aside class="notes">Let's take a more practical look at the framework</aside>
           </section>
           <section>
             <h3>EXAMPLE: PROPERTY FEED</h3>
              <img class="plain noalpha" src="asset/sample_pipeline.svg">
+             <aside class="notes">
+              We are going to explain this by example, let's assume we want to build the following reactive pipeline.
+              We have a Kafka feed of property data - we want to validate this data and send it to Google Adwords.
+              This is a simplified view of our real Adwords feed.
+             </aside>
           </section>
           <section>
             <img class="stretch plain noalpha" src="asset/layers.svg">
           </section>
-          <section>
+          <!-- <section>
             <img class="stretch plain noalpha" src="asset/application_layer.svg">
-          </section>
-          <aside class="notes">
-            Application layer responsibility:
-            1) Start and stop the streaming of data (LIFECYCLE)
-            Performing any scheduling if needed - a pipeline could be a scheduled transfer, or an infinite stream
-            Exposing a handle for a clean shutdown is certainly needed for testing, and sometimes even in production
+            <aside class="notes">
+              Application layer responsibility:
+              1) Start and stop the streaming of data (LIFECYCLE)
+              Performing any scheduling if needed - a pipeline could be a scheduled transfer, or an infinite stream
 
-            2) Config and environment management
-          </aside>
-          <section data-markdown>
-            <script type="text/template">
-              ###APPLICATION - TEST
-              ```scala
-              "application" should "run" in {
-
-                val handle = Application.run(Environment.Test)
-
-                eventually {
-                  // some side-effect should happen
-                }
-
-                handle.shutdown().futureValue
-              }
-              ```
-
-              Note:
-              - Testing application as a black box
-              - Quite complex and lengthy to run
-              - All dependencies are embedded
-              - Eventually-based to verify side-effects
-            </script>
+              2) Config and environment management
+            </aside>
           </section>
           <section data-markdown>
             <script type="text/template">
@@ -285,16 +261,17 @@
               Note:
               ...
             </script>
-          </section>
-          <section>
-            <img class="plain noalpha" src="asset/reactive_layer.svg">
             <aside class="notes">
-              Reactive layer responsibility:
-              (surprise surprise) make the stream reactive
-              - Define the topology of the stream (what we’ll call the graph)
-              - Define the building blocks of the stream (what we’ll call the stages,
-              we'll see there are different types of them)
-              - Deal with backpressure and parallelism
+              Exposing a handle for a clean shutdown is certainly needed for testing, and sometimes even in production
+            </aside>
+          </section> -->
+          <section>
+            <img class="stretch plain noalpha" src="asset/reactive_layer.svg">
+            <aside class="notes">
+              We'll start by reasoning about the reactive layer, so we're going "middle-out" in terms of design.
+
+              this layer makes the only opinionated choice in using Akka Streams.
+              this layer responsibility is to use akka streams to define the stages of the pipeline
             </aside>
           </section>
           <section>
@@ -304,6 +281,9 @@
               A stage is a reactive component of arbitrary complexity.
               It is reusable and composable.
 
+              They come in form of sources, sinks, flows, graphs depending on the shape they have,
+              that is, the number of input and output ports they have.
+
               It's important to note that, to us, these are not just Akka Streams DSL objects,
               but they became part of the ubiquitous language. In other words, they became the official glossary
               used within the team.
@@ -311,40 +291,82 @@
           </section>
           <section data-markdown>
             <script type="text/template">
-              ###Stage blueprint
+              ###Stage typing
               1. shape (strongly typed in/out ports)
               2. materialized value (last type param)
 
               Note:
               An Akka stage has an external blueprint made up of its shape, which is essentially a bunch of
-              strongly typed input and output ports, and its materialized value, which is something the stage
-              transforms into when the stream is run (or materialized).
+              strongly typed input and output ports, and its materialized value, which can be seen as the stage
+              interface, or a way to interact with the stage.
             </script>
           </section>
           <section data-markdown>
             <script type="text/template">
-| Stage   | Type                                         |
-|---------|----------------------------------------------|
-| Source  | `Source[Property, Shutdownable]`             |
-| Flow    | `Flow[Property, ValidProperty, NotUsed]`     |
-| Sink    | `Sink[ValidProperty, Future[Done]]`          |
-| Graph*  | `RunnableGraph[(Shutdownable, Future[Done])]`|
+              ![pipeline types](asset/pipelines_types_0.svg)
 
-*: can be `run()`
+              Note:
+              We found it is good practice to make these types a product of the analysis phase
+              of your user story, and then let them drive your testing and your implementation.
+              So let's design our stages.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![pipeline types](asset/pipelines_types_1.svg)
 
-Note:
-Let's see this by example. - go through them -
+              Note:
+              We are going to need a source of properties, so we can design a source with output type Property.
+              And our materialized value will be a Shutdownable, i.e. something we can call shutdown on, to be
+              able to control our kafka stream.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![pipeline types](asset/pipelines_types_2.svg)
 
-We found it is good practice to make these types a product of the analysis phase
-of your user story, and then let them drive your testing and your implementation.
+              Note:
+              Then we'll have a flow (1 input, 1 output) to perform the validation logic.
+              Property is our input, and as output we can use Cats validated, i.e.
+              something that can be invalid, i.e. a validation error, or valid, i.e. a property
+              This is not the only way you can model this, just wanted to mention we like to use Cats
+              types at this level to increase expressiveness.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![pipeline types](asset/pipelines_types_3.svg)
+
+              Note:
+              This calls for a partition of the graph, a part will handle the happy path, another the error path.
+              We'll need one sink for properties, and one for errors.
+              Treat errors as messages is prescribed by the reactive manifesto, and allows you to handle errors all in one place.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ![pipeline types](asset/pipelines_types.svg)
+
+              Note:
+              Everything is wrapped by a graph, which is a closed stage, with no inputs or outputs.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###OFF-THE-SHELF STAGES
+              - Akka (HTTP, TCP, ...)
+              - Alpakka (AWS, SFTP, ...)
+              - Reactive-Kafka
+              - ...
+
+              Note:
+              Now that we have defined the stage types, we can proceed to testing and implementation.
+
+              This is a good moment to look around for any library which might already offer what we need.
+              I've listed some of them on this slide. For example if you need a source reading from Kafka..
             </script>
           </section>
           <section>
-            <img class="stretch plain noalpha" src="asset/stages_ots.svg">
-            <aside class="notes"></aside>
-          </section>
-          <section>
-            <h3>SOURCE</h3>
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object PropertySource {
@@ -365,63 +387,84 @@ object PropertySource {
 }
               </code>
             </pre>
+            <aside class="notes">
+              ...it's a good idea to use ReactiveKafka. This is a stable library that can give you
+              sources and sinks to interact with Kafka. In this example you can see you can easily
+              get a Kafka source by providing a bunch of settings - note that you'll need to provide
+              a deserializer. However, this source is typed with reactive-kafka types. You see it is
+              a source of consumerRecord that materialized to a Control.
+              It is good practice to not leak these types outside of the stage, and this is what you
+              can see in the second part of the source...
+            </aside>
           </section>
           <section>
-            <h3>FLOW</h3>
-            <pre>
+            <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object ValidationFlow {
 
-  def apply(): Flow[Property, ValidProperty, NotUsed] = {
+  def apply(): Flow[Property, Validated[Error, Property], NotUsed] = {
 
     val service: PropertyValidationService = ???
 
-    Flow[Property].map(service.validate)
+    Flow.fromFunction(service.validate)
   }
 }
               </code>
             </pre>
             <aside class="notes">
-              Custom stages need to be wrappers around domain logic.
+              Custom stages need to be wrappers around domain logic. Flow.fromFunction can be used
+              to wrap synchronous calls into flows.
             </aside>
           </section>
           <section>
-            <h3>SINK</h3>
-            <pre>
+            <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
-object ValidPropertySink {
+object PropertySink {
+  def apply(config: AdWordsConfig): Sink[Property, Future[Done]] = {
 
-  def apply(config: CassandraConfig):
-  Sink[ValidProperty, Future[Done]] = {
-
-    val repository: ValidPropertyRepository = ???
+    val repository: PropertyRepository = ???
 
     Flow[ValidProperty]
       .mapAsync(config.parallelism)(repository.store)
-      .toMat(Sink.ignore)(Keep.right)
+      .toMat(Sink.foreach { _ ⇒
+        // log / metrics
+      })(Keep.right)
   }
+}
+
+object ErrorSink {
+  def apply(): Sink[Error, Future[Done]] =
+    Sink.foreach { error ⇒
+      // log / metrics
+    }
 }
               </code>
             </pre>
             <aside class="notes">
-              Custom stages need to be wrappers around domain logic.
+              The property sink is equally simple, as it wraps another domain entity, which is a property repository.
+              The difference here is that this repository will talk to Google Adwords, hence it will
+              provide and async behaviour. Using the mapAsync combinator we can limit the number of parallel calls
+              we'll make.
             </aside>
           </section>
           <section>
-            <h3>GRAPH</h3>
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object Graph {
-  def apply(propertySource: Source[Property, Shutdownable],
-            validationFlow: Flow[Property, ValidProperty, NotUsed],
-            propertySink  : Sink[ValidProperty, Future[Done]]):
+  def apply(source   : Source[Property, Shutdownable],
+            flow     : Flow[Property, Validated[Error, Property], NotUsed],
+            errorSink: Sink[Error, Future[Done]],
+            sink     : Sink[Property, Future[Done]]):
   RunnableGraph[(Shutdownable, Future[Done])] = {
 
-    RunnableGraph.fromGraph(GraphDSL.create(propertySource, propertySink)
+    RunnableGraph.fromGraph(GraphDSL.create(source, sink)
     ((_, _)) { implicit builder ⇒ (source, sink) ⇒
-      import GraphDSL.Implicits._
 
-      source ~> validationFlow ~> sink
+      val p = builder.add(PartitionValidated.apply()[Error, Property])
+
+                        p.out0 ~> errorSink
+      source ~> flow ~> p.in
+                        p.out1 ~> sink
 
       ClosedShape
     })
@@ -430,47 +473,104 @@ object Graph {
               </code>
             </pre>
             <aside class="notes">
-              Creating a graph forces you to reason about 2 things:
-              1) the topology of your pipeline
-              2) the types of your stages
+              The graph is where everything comes together. Akka Streams graphDSL allows to define
+              your topology in a very visual way.
 
               Using GraphDSL might seem verbose as it carries some boilerplate - and for this example is definitely overkill.
               However, the graphDSL will reflect the topology of your pipeline while it grows.
               It is self documenting code, which is awesome.
 
-              This is where everything comes together. The graph can accomodate non-functional stages for logging,
-              monitoring, error handling...
+              You can clearly see how the graph resembles the graph we initially designed on paper.
             </aside>
           </section>
           <section>
             <img class="stretch plain noalpha" src="asset/domain_layer.svg">
             <aside class="notes">
               This layer must not know about Akka. It is where your business logic lives.
-              FOURTH TAKEAWAY!
             </aside>
           </section>
           <section>
             <img class="stretch plain noalpha" src="asset/domain.svg">
+            <aside class="notes">
+              The stuff we have in here has been driven by the decisions we have made on the reactive layer.
+              We need entities representing a Property, and a validation error, which we can now model,
+              we need a service to validate, and we need a repository to deal with the AdWords API.
+            </aside>
           </section>
           <section>
-            <img class="stretch plain noalpha" src="asset/layers.svg">
+            <img class="stretch plain noalpha" src="asset/application_layer.svg">
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###APPLICATION LAYER
+              1. lifecycle management
+              2. docker packaging
+
+              Note:
+              Application layer responsibility:
+              1) Start and stop the streaming of data and restarting the stream in case of failure
+              2) Enable Docker packaging
+            </script>
+          </section>
+          <section>
+            <img class="stretch plain noalpha" src="asset/layers_scale.svg">
             <aside class="notes">
-              to quickly recap:
-              application layer: lifecycle and configuration
-              reactive layer: all the reactive infrastructure (with the help of Akka)
-              domain layer: all things business logic
+              Docker packaging allows for greater scalability
+              as we can deploy as many feed instances as we want in the cloud.
             </aside>
           </section>
         </section>
 
-        <section data-markdown>
+        <section>
+          <section data-markdown>
             <script type="text/template">
-            #KEY TAKEAWAYS
-            1. Borrow from Akka Streams to extend your ubiquitous language
-            2. Brainstorm on the stages types before coding
-            3. Browse for off-the-shelf stages
-            4. Separate your reactive infrastructure from your domain
+              ###WE WANTED OUR FEEDS TO BE
+
+              Note:
+              To bring us back to why are we doing all this
             </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###WE WANTED OUR FEEDS TO BE
+              1. resilient
+
+              Note:
+              - Reactive streams enable backpressure so the feeds cannot be overloaded,
+              this makes memory errors are a thing of the past
+              - Any unpredicted failure results in restarting the stream
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              ###WE WANTED OUR FEEDS TO BE
+              1. resilient
+              2. scalable
+
+              Note:
+              Using reactive streams we squeeze our local environments by minimizing resource contention
+              (by virtue of asynchronous non-blocking processing)
+              Whenever this is not sufficient, we can easily scale horizontally thanks to Kafka and Docker.
+            </script>
+          </section>
+          <section data-markdown>
+            <script type="text/template">
+              Image with adwords and throughput
+
+              Note:
+              This is basically how we got ..
+            </script>
+          </section>
+
+          <!-- <section data-markdown>
+            <script type="text/template">
+              #KEY TAKEAWAYS
+              1. Borrow from Akka Streams to extend your ubiquitous language
+              2. Brainstorm on the stages types before coding
+              3. Browse for off-the-shelf stages
+              4. Separate your reactive infrastructure from your domain
+            </script>
+          </section> -->
         </section>
 
         <section>
