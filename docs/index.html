@@ -29,7 +29,6 @@
         <section>
         <section>
           <img class="plain noalpha" src="asset/homeaway.svg">
-          <aside class="notes">Let’s start with a quick survey, who among you knows what HomeAway is?</aside>
         </section>
         <section>
           <img class="plain noalpha" src="asset/expedia.jpg">
@@ -459,16 +458,10 @@ object Graph {
 
               Note:
               Using reactive streams we squeeze our local environments by minimizing resource contention
-              (by virtue of asynchronous non-blocking processing)
+              (as a result of asynchronous non-blocking processing)
               Whenever this is not sufficient, we can easily scale horizontally thanks to Kafka and Docker.
-            </script>
-          </section>
-          <section data-markdown>
-            <script type="text/template">
-              Image with adwords and throughput
-
-              Note:
-              This is basically how we got ..
+              This way we can reach the throughput we want - for example we had peaks of 200 tps on our adwords pipeline,
+              but that's essentially limited by our 3rd party dependencies
             </script>
           </section>
         </section>
