@@ -66,7 +66,7 @@
             | <i class="fa fa-twitter" aria-hidden="true"></i><a href="https://twitter.com/svez_faz"> @svez_faz</a></p>
             <aside class="notes">
               My name is Stefano, I am a software engineer at HomeAway.
-              and I am going to show you how we tackled marketing automation (or at least one of its many faces) developing reactive systems with Akka and Scala.
+              and I am going to show you how we tackled marketing automation (or at least one of its many faces) developing reactive pipelines with Akka and Scala.
             </aside>
         </section>
       </section>
@@ -135,12 +135,12 @@
           <section data-markdown>
             <script type="text/template">
               ###OBJECTIVE
-              A framework to quickly roll out pipelines which are
+              Quickly roll out pipelines which are
               1. resilient
               2. scalable
 
               Note:
-              To tackle this, we need a framework to enable a quick rollout of pipeline applications which are
+              To tackle this, we need a pattern to enable the quick rollout of pipeline applications which are
               1) resilient - as in, they need to recover from failures and be always on
               2) scalable - to be able to handle changing and increasing load
             </script>
@@ -158,8 +158,8 @@
 
         <section>
           <section>
-            <h1>THE FRAMEWORK</h1>
-            <aside class="notes">Let's take a more practical look at the framework</aside>
+            <h1>OUR APPROACH</h1>
+            <aside class="notes">Let's take a more practical look at how we tackled this problem</aside>
           </section>
           <section>
             <h3>EXAMPLE: PROPERTY FEED</h3>
@@ -234,7 +234,7 @@
               ![pipeline types](asset/pipelines_types_2.svg)
 
               Note:
-              Then we'll have a flow (1 input, 1 output) to perform the validation logic.
+              Then we'll have a flow (1 input, 1 output) to perform the processing logic.
               Property is our input, and as output we can use Cats validated, i.e.
               something that can be invalid, i.e. a validation error, or valid, i.e. a property
               This is not the only way you can model this, just wanted to mention we like to use Cats
@@ -258,6 +258,7 @@
 
               Note:
               Everything is wrapped by a graph, which is a closed stage, with no inputs or outputs.
+
             </script>
           </section>
           <section data-markdown>
@@ -309,11 +310,11 @@ object PropertySource {
           <section>
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
-object ValidationFlow {
+object ProcessingFlow {
 
-  def apply(): Flow[Property, Validated[Error, Property], NotUsed] = {
+  def apply(): Flow[Property, Validated[Error, AdWordsProperty], NotUsed] = {
 
-    val service: PropertyValidationService = ???
+    val service: PropertyProcessingService = ???
 
     Flow.fromFunction(service.validate)
   }
@@ -329,11 +330,11 @@ object ValidationFlow {
             <pre class="stretch">
               <code data-trim data-noescape class="hljs scala">
 object PropertySink {
-  def apply(config: AdWordsConfig): Sink[Property, Future[Done]] = {
+  def apply(config: AdWordsConfig): Sink[AdWordsProperty, Future[Done]] = {
 
     val repository: PropertyRepository = ???
 
-    Flow[ValidProperty]
+    Flow[AdWordsProperty]
       .mapAsync(config.parallelism)(repository.store)
       .toMat(Sink.foreach { _ ⇒
         // log / metrics
@@ -361,15 +362,15 @@ object ErrorSink {
               <code data-trim data-noescape class="hljs scala">
 object Graph {
   def apply(source   : Source[Property, Shutdownable],
-            flow     : Flow[Property, Validated[Error, Property], NotUsed],
+            flow     : Flow[Property, Validated[Error, AdWordsProperty], NotUsed],
             errorSink: Sink[Error, Future[Done]],
-            sink     : Sink[Property, Future[Done]]):
+            sink     : Sink[AdWordsProperty, Future[Done]]):
   RunnableGraph[(Shutdownable, Future[Done])] = {
 
     RunnableGraph.fromGraph(GraphDSL.create(source, sink)
     ((_, _)) { implicit builder ⇒ (source, sink) ⇒
 
-      val p = builder.add(PartitionValidated.apply()[Error, Property])
+      val p = builder.add(PartitionValidated.apply()[Error, AdWordsProperty])
 
                         p.out0 ~> errorSink
       source ~> flow ~> p.in
@@ -402,7 +403,7 @@ object Graph {
             <img class="stretch plain noalpha" src="asset/domain.svg">
             <aside class="notes">
               The stuff we have in here has been driven by the decisions we have made on the reactive layer.
-              We need entities representing a Property, and a validation error, which we can now model,
+              We need entities representing properties, and a validation error, which we can now model,
               we need a service to validate, and we need a repository to deal with the AdWords API.
             </aside>
           </section>
@@ -412,13 +413,17 @@ object Graph {
           <section data-markdown>
             <script type="text/template">
               ###APPLICATION LAYER
-              1. lifecycle management
-              2. docker packaging
+              1. config management
+              2. stages creation
+              3. lifecycle management
+              4. docker packaging
 
               Note:
               Application layer responsibility:
-              1) Start and stop the streaming of data and restarting the stream in case of failure
-              2) Enable Docker packaging
+              1) manage configuration
+              2) create the stages and the graph
+              3) Start and stop the streaming of data and restarting the stream in case of failure
+              4) Enable Docker packaging
             </script>
           </section>
           <section>
@@ -460,8 +465,6 @@ object Graph {
               Using reactive streams we squeeze our local environments by minimizing resource contention
               (as a result of asynchronous non-blocking processing)
               Whenever this is not sufficient, we can easily scale horizontally thanks to Kafka and Docker.
-              This way we can reach the throughput we want - for example we had peaks of 200 tps on our adwords pipeline,
-              but that's essentially limited by our 3rd party dependencies
             </script>
           </section>
         </section>
