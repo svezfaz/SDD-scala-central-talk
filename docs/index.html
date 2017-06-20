@@ -259,6 +259,8 @@
               Note:
               Everything is wrapped by a graph, which is a closed stage, with no inputs or outputs.
 
+              Note that testing these single stages is way easier and more flexible than testing the pipeline
+              as a whole.
             </script>
           </section>
           <section data-markdown>
@@ -270,7 +272,7 @@
               - ...
 
               Note:
-              Now that we have defined the stage types, we can proceed to testing and implementation.
+              Now that we have defined the stage types, we can move on to coding.
 
               This is a good moment to look around for any library which might already offer what we need.
               I've listed some of them on this slide. For example if you need a source reading from Kafka..
