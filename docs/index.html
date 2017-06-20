@@ -338,9 +338,7 @@ object PropertySink {
 
     Flow[AdWordsProperty]
       .mapAsync(config.parallelism)(repository.store)
-      .toMat(Sink.foreach { _ ⇒
-        // log / metrics
-      })(Keep.right)
+      .toMat(Sink.ignore)(Keep.right)
   }
 }
 
@@ -467,6 +465,7 @@ object Graph {
               Using reactive streams we squeeze our local environments by minimizing resource contention
               (as a result of asynchronous non-blocking processing)
               Whenever this is not sufficient, we can easily scale horizontally thanks to Kafka and Docker.
+              This way we can basically reach the throughput we want being limited only by our integration dependencies
             </script>
           </section>
         </section>
